@@ -4,7 +4,7 @@ const cors = require("cors");
 const dbConnection = require("./Config/dbConnection");
 const app = express();
 const userRouter = require("./Route/UserRouter");
-const adminRouter = require("./Route/AdminRouter");
+// const adminRouter = require("./Route/AdminRouter");
 
 //database config
 dbConnection.dbConnect();
@@ -15,7 +15,8 @@ app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
 });
 
+app.use(express.json())
 
 app.use(cors())
 app.use("/", userRouter)
-app.use("/admin", adminRouter)
+//app.use("/admin", adminRouter)
