@@ -1,4 +1,5 @@
 const userModel = require("../Model/userModel");
+const productModel = require("../Model/productModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const maxAge = 3 * 24 * 60 * 60;
@@ -69,6 +70,24 @@ module.exports.Login = async (req, res, next) => {
     return res.json({
       message: "Internal server in sign up",
       created: false,
+    });
+  }
+};
+
+module.exports.latestArrivals = async (req, res, next) => {
+  try{
+    const data = await productModel.find({}).sort({ dateAdded: -1 }).limit(10);
+
+    res.json({
+      message: "latest arrival fetched",
+      status: true,
+      LatestArrival : data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal server error in fetch announcement",
+      status: false,
     });
   }
 };

@@ -15,8 +15,8 @@ app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
 });
 
-app.use(express.json())
+app.use(express.json());
 
-app.use(cors())
-app.use("/", userRouter)
-app.use("/admin", adminRouter)
+app.use(cors());
+app.use("/", userRouter);
+app.use("/admin", adminRouter);

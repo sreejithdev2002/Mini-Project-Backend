@@ -2,6 +2,7 @@ const adminModel = require("../Model/adminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const productModel = require("../Model/productModel");
+const userModel = require("../Model/userModel");
 const maxAge = 3 * 24 * 60 * 60;
 
 const createToken = (adminId) => {
@@ -82,4 +83,22 @@ module.exports.AddProducts = async (req, res, next) => {
       status: false,
     });
   }
-}
+};
+
+module.exports.userList = async (req, res, next) => {
+  try{
+    const data = await userModel.find();
+
+    res.json({
+      message: "User list fetched",
+      status: true,
+      UserList: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal server error in fetch announcement",
+      status: false,
+    });
+  }
+};

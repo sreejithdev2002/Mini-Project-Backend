@@ -1,5 +1,5 @@
 const express = require("express");
-const { Login, AddProducts } = require("../Controller/adminController");
+const { Login, AddProducts, userList } = require("../Controller/adminController");
 const router = express.Router();
 
 //POST
@@ -7,4 +7,8 @@ const router = express.Router();
 router.post("/login", Login);
 router.post("/add", AddProducts);
 
+
+//GET
+
+router.get("/", userList);
 module.exports = router;
