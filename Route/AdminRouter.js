@@ -1,5 +1,5 @@
 const express = require("express");
-const { Login, AddProducts, userList } = require("../Controller/adminController");
+const { Login, AddProducts, userList, viewProducts } = require("../Controller/adminController");
 const router = express.Router();
 
 //POST
@@ -11,4 +11,5 @@ router.post("/add", AddProducts);
 //GET
 
 router.get("/", userList);
+router.get("/view", viewProducts);
 module.exports = router;

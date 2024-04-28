@@ -97,8 +97,25 @@ module.exports.userList = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.json({
-      message: "Internal server error in fetch announcement",
+      message: "Internal server error in userlist",
       status: false,
     });
   }
 };
+
+module.exports.viewProducts = async (req, res, next) => {
+  try{
+    const data = await productModel.find();
+
+    res.json({
+      message: "Products fetched",
+      status: true,
+      ViewProducts: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal server error in view products",
+    });
+  } 
+}; 
