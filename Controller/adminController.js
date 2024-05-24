@@ -51,10 +51,19 @@ module.exports.Login = async (req, res, next) => {
 
 module.exports.AddProducts = async (req, res, next) => {
   console.log(req.body, "@@@@@@@@@@@@");
-  const { name, brand, description, price, gender, isLuxury, dateAdded, category } = req.body;
+  const {
+    name,
+    brand,
+    description,
+    price,
+    gender,
+    isLuxury,
+    dateAdded,
+    category,
+  } = req.body;
 
-  try{
-    const productExist = await productModel.findOne({ name: name});
+  try {
+    const productExist = await productModel.findOne({ name: name });
     if (productExist) {
       return res.json({ message: "Product already exist", status: false });
     }
@@ -71,12 +80,12 @@ module.exports.AddProducts = async (req, res, next) => {
     });
 
     await newProduct.save();
-    
+
     return res.json({
       message: "Product added successfully",
       status: true,
     });
-  } catch(error){
+  } catch (error) {
     console.log(error);
     return res.json({
       message: "Internal server in sign up",
@@ -86,7 +95,7 @@ module.exports.AddProducts = async (req, res, next) => {
 };
 
 module.exports.userList = async (req, res, next) => {
-  try{
+  try {
     const data = await userModel.find();
 
     res.json({
@@ -104,7 +113,7 @@ module.exports.userList = async (req, res, next) => {
 };
 
 module.exports.viewProducts = async (req, res, next) => {
-  try{
+  try {
     const data = await productModel.find();
 
     res.json({
@@ -117,5 +126,5 @@ module.exports.viewProducts = async (req, res, next) => {
     res.json({
       message: "Internal server error in view products",
     });
-  } 
-}; 
+  }
+};

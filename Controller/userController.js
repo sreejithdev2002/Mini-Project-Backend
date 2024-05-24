@@ -3,8 +3,7 @@ const productModel = require("../Model/productModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const maxAge = 3 * 24 * 60 * 60;
-const _ = require("lodash")
-
+const _ = require("lodash");
 const createToken = (userId) => {
   const token = jwt.sign({ userId }, "JWT", { expiresIn: maxAge });
   return token;
@@ -218,7 +217,7 @@ module.exports.luxury = async (req, res, next) => {
 };
 
 module.exports.featuredProducts = async (req, res, next) => {
-  try{
+  try {
     const products = await productModel.find();
     const shuffledProducts = _.shuffle(products);
     const data = shuffledProducts.slice(0, 4);
@@ -232,6 +231,30 @@ module.exports.featuredProducts = async (req, res, next) => {
     console.log(error);
     res.json({
       message: "Internal server error in featured products",
+      status: false,
+    });
+  }
+};
+
+module.exports.productDetails = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (product) {
+      return res.json({
+        message: "success",
+        status: true,
+        product,
+      });
+    }
+    res.json({
+      message: "cannot get data",
+      status: false,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      message: "internal server error",
       status: false,
     });
   }

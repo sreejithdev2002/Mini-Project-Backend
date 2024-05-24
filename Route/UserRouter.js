@@ -1,14 +1,25 @@
 const express = require("express");
-const { Signup, Login, latestArrivals, mens, womens, casuals, formals, sandals, sneakers, luxury, featuredProducts } = require("../Controller/userController");
+const {
+  Signup,
+  Login,
+  latestArrivals,
+  mens,
+  womens,
+  casuals,
+  formals,
+  sandals,
+  sneakers,
+  luxury,
+  featuredProducts,
+  productDetails,
+} = require("../Controller/userController");
 const router = express.Router();
-// const userAuth = require("../Middleware/userAuth");
+const userAuth = require("../Middleware/userAuth");
 
 //POST
 
 router.post("/signup", Signup);
 router.post("/login", Login);
-
-
 
 //GET
 
@@ -21,5 +32,12 @@ router.get("/categories/formals", formals);
 router.get("/categories/sandals", sandals);
 router.get("/categories/sneakers", sneakers);
 router.get("/luxury", luxury);
+router.get("/product/:id", userAuth, productDetails);
 
-module.exports = router; 
+router.get("/auth/status", (req, res) => {
+  const isLoggedIn = req.user ? true : false;
+
+  res.json({ isLoggedIn });
+});
+
+module.exports = router;

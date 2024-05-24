@@ -7,6 +7,7 @@ module.exports = async (req, res, next) => {
     console.log(authHeader, "Middleware One");
     const authToken = authHeader && authHeader.split(" ")[1];
     console.log(authToken, "Middleware Two");
+    console.log('@@@@@@@@@@@@@',authToken, "@@@@@@@@@@@@@@")
     if (!authToken) {
       return res.json({
         loginfail: true,
@@ -16,7 +17,7 @@ module.exports = async (req, res, next) => {
     }
     const decode = jwt.verify(authToken, "JWT");
 
-    const user = await userModel.findOne({ _id: decode.id });
+    const user = await userModel.find({ _id: decode.id });
 
     if (!user) {
       return res.json({
@@ -29,11 +30,22 @@ module.exports = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log(error);
-    return res.json({
-      message: "Unauthorized access",
-      status: false,
-      loginfail: true,
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        message: "Token has expired",
+      });
+    }
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+    console.error("Middleware error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
     });
   }
 };

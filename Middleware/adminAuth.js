@@ -7,6 +7,7 @@ module.exports = async (req, res, next) => {
     console.log(authHeader, "Middleware One");
     const authToken = authHeader && authHeader.split(" ")[1];
     console.log(authToken, "Middleware Two");
+    console.log("@@@@@@@@@@@@", authToken, "@@@@@@@@@@@@@@@@");
 
     if (!authToken) {
       return res.json({
@@ -17,7 +18,7 @@ module.exports = async (req, res, next) => {
     }
     const decode = jwt.verify(authToken, "JWT");
 
-    const admin = await adminModel.findOne({ _id: decode.id });
+    const admin = await adminModel.find({ _id: decode.id });
 
     if (!admin) {
       return res.json({
