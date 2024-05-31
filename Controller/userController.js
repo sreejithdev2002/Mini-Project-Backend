@@ -74,8 +74,10 @@ module.exports.Login = async (req, res, next) => {
 
 module.exports.latestArrivals = async (req, res, next) => {
   try {
-    const data = await productModel.find({}).sort({ dateAdded: -1 }).limit(10);
-
+    const data = await productModel
+      .find({ disableProduct: { $ne: true } })
+      .sort({ dateAdded: -1 })
+      .limit(10);
     res.json({
       message: "latest arrival fetched",
       status: true,
@@ -239,12 +241,12 @@ module.exports.featuredProducts = async (req, res, next) => {
 module.exports.productDetails = async (req, res) => {
   try {
     const id = req.params.id;
-    const product = await productModel.findById(id);
-    if (product) {
+    const data = await productModel.find(id);
+    if (data) {
       return res.json({
         message: "success",
         status: true,
-        product,
+        Product: data,
       });
     }
     res.json({

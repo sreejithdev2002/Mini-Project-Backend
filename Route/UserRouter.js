@@ -14,7 +14,7 @@ const {
   productDetails,
 } = require("../Controller/userController");
 const router = express.Router();
-const userAuth = require("../Middleware/userAuth");
+// const userAuth = require("../Middleware/userAuth");
 
 //POST
 
@@ -32,10 +32,13 @@ router.get("/categories/formals", formals);
 router.get("/categories/sandals", sandals);
 router.get("/categories/sneakers", sneakers);
 router.get("/luxury", luxury);
-router.get("/product/:id", userAuth, productDetails);
+router.get(`/product/:id`, productDetails);
 
 router.get("/auth/status", (req, res) => {
-  const isLoggedIn = req.user ? true : false;
+  let isLoggedIn = false;
+  if (req.user) {
+    isLoggedIn = true;
+  }
 
   res.json({ isLoggedIn });
 });
