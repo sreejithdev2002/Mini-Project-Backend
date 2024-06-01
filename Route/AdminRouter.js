@@ -10,11 +10,13 @@ const {
 } = require("../Controller/adminController");
 // const adminAuth = require("../Middleware/adminAuth");
 const router = express.Router();
+const createMulterInstance = require("../Middleware/multer");
+const upload = createMulterInstance("products");
 
 //POST
 
 router.post("/login", Login);
-router.post("/add", AddProducts);
+router.post("/add", upload.single("image"), AddProducts);
 
 //GET
 
