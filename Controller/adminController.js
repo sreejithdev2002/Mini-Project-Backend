@@ -70,7 +70,7 @@ module.exports.AddProducts = async (req, res) => {
       price,
       gender,
       isLuxury,
-      dateAdded,
+      // dateAdded,
       category,
     } = req.body;
     const image = req.file ? req.file.filename : null;
@@ -83,7 +83,7 @@ module.exports.AddProducts = async (req, res) => {
       price,
       gender,
       isLuxury,
-      dateAdded: new Date(dateAdded),
+      // dateAdded: new Date(dateAdded),
       category,
       image,
     });
@@ -180,5 +180,20 @@ module.exports.disableProduct = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error " });
+  }
+};
+
+module.exports.blockUser = async (req,res) => {
+  try{
+    const user = await userModel.findById(req.params.id);
+    if(!user){
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.blockStatus = !user.blockStatus;
+    await user.save();
+    res.json({ status: true, blockStatus: user.blockStatus });
+  } catch(error){
+    res.status(500).json({ message : "Server error", error })
   }
 };

@@ -27,6 +27,10 @@ module.exports = async (req, res, next) => {
       });
     }
 
+    if (user.blockStatus) {
+      return res.status(403).json({ message: 'Your account is blocked.' });
+    }
+
     req.user = user;
     next();
   } catch (error) {

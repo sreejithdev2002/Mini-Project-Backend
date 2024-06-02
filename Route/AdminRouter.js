@@ -7,6 +7,7 @@ const {
   getProductById,
   updateProduct,
   disableProduct,
+  blockUser,
 } = require("../Controller/adminController");
 // const adminAuth = require("../Middleware/adminAuth");
 const router = express.Router();
@@ -28,5 +29,6 @@ router.get("/products/:productId", getProductById);
 
 router.put("/products/:productId", updateProduct);
 router.put("/products/:id/disable", disableProduct);
+router.put("/users/:id/block", blockUser);
 
 module.exports = router;
