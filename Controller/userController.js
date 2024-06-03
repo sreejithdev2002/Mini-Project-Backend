@@ -240,23 +240,23 @@ module.exports.featuredProducts = async (req, res, next) => {
 
 module.exports.productDetails = async (req, res) => {
   try {
-    const id = req.params.id;
-    const data = await productModel.find(id);
-    if (data) {
-      return res.json({
+    const productId = req.params.id;
+    const singleProduct = await productModel.findById(productId);
+    if (singleProduct) {
+      return res.status(200).json({
         message: "success",
         status: true,
-        Product: data,
+        product: singleProduct,
       });
     }
-    res.json({
-      message: "cannot get data",
+    res.status(404).json({
+      message: "Product not found",
       status: false,
     });
   } catch (err) {
     console.log(err);
-    res.json({
-      message: "internal server error",
+    res.status(500).json({
+      message: "Internal server error",
       status: false,
     });
   }

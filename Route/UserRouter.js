@@ -32,7 +32,7 @@ router.get("/categories/formals", formals);
 router.get("/categories/sandals", sandals);
 router.get("/categories/sneakers", sneakers);
 router.get("/luxury", luxury);
-router.get(`/product/:id`, productDetails);
+router.get("/product/:id", productDetails);
 
 router.get("/auth/status", (req, res) => {
   let isLoggedIn = false;
