@@ -5,55 +5,49 @@ const productModel = require("../Model/productModel");
 const userModel = require("../Model/userModel");
 const upload = require("../Middleware/multer");
 const { validationResult } = require("express-validator");
+const orderModel = require("../Model/orderModel");
 
 const maxAge = 3 * 24 * 60 * 60;
 
 const createToken = (adminId) => {
-  const token = jwt.sign({ adminId }, "adminJWT", { expiresIn: maxAge });
+  const token = jwt.sign({ adminId }, "adminjwt", { expiresIn: maxAge });
+  console.log(token);
   return token;
 };
 
-module.exports.Login = async (req, res, next) => {
-  console.log(req.body, "@@@@@@@@@@@@@@@@@@@@@@@");
+module.exports.Login = async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    const admin = await adminModel.findOne({ email });
-    console.log("111111111111111111%%%%%%%%%%%%" + admin);
-
-    if (admin) {
-      console.log("2222222222222222%%%%%%%%%%%%" + admin);
-      const passwordMatches = await bcrypt.compare(password, admin.password);
-
-      if (passwordMatches) {
-        console.log("CREATED TOKEN @@@@@@@@!!!!!!!!!");
-        const token = createToken(admin._id);
-        return res.status(200).json({
-          admin: admin,
-          message: "Admin login successful",
-          created: true,
-          token,
-        });
-      } else {
-        return res.status(401).json({
-          message: "Incorrect password",
-          created: false,
-        });
-      }
-    } else {
-      return res.status(404).json({
-        message: "Account not found",
-        created: false,
+    const existingAdmin = await adminModel.findOne({ email });
+    if (!existingAdmin) {
+      return res.json({
+        status: false,
+        message: "Admin does not exist",
       });
     }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Internal server error during login",
-      created: false,
+    const passwordMatch = await bcrypt.compare(password, existingAdmin.password);
+    if (!passwordMatch) {
+      return res.json({
+        status: false,
+        message: "Wrong password",
+      });
+    }
+    const token = createToken(existingAdmin._id);
+    res.json({
+      admin: existingAdmin,
+      status: true,
+      message: "Login success",
+      token,
+    });
+  } catch (err) {
+    console.log("admin login error", err);
+    res.json({
+      message: "Login failed",
+      status: false,
     });
   }
 };
+
 
 module.exports.AddProducts = async (req, res) => {
   const errors = validationResult(req);
@@ -195,5 +189,20 @@ module.exports.blockUser = async (req,res) => {
     res.json({ status: true, blockStatus: user.blockStatus });
   } catch(error){
     res.status(500).json({ message : "Server error", error })
+  }
+};
+
+module.exports.getAllOrders = async(req, res) => {
+  try{
+    const orders = await orderModel.find().populate('product').populate('user').exec();
+
+    res.status(200).json({ status: true, orders,});
+  } catch(error){
+    res.status(500).json({
+      status: false,
+      message: 'Failed to fetch orders',
+      error: error.message,
+    });
+
   }
 };

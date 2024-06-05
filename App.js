@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const dbConnection = require("./Config/dbConnection");
 const app = express();
 const userRouter = require("./Route/UserRouter");
@@ -17,6 +18,9 @@ app.listen(PORT, () => {
 });
 
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use(cors());
 app.use("/", userRouter);
