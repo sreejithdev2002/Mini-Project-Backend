@@ -5,10 +5,13 @@ const {
   userList,
   viewProducts,
   getProductById,
-  updateProduct,
   disableProduct,
   blockUser,
   getAllOrders,
+  deleteProduct,
+  editProduct,
+  deleteOrder,
+  updateProduct,
 } = require("../Controller/adminController");
 const adminAuth = require("../Middleware/adminAuth");
 const router = express.Router();
@@ -24,13 +27,16 @@ router.post("/add", upload.single("image"), adminAuth, AddProducts);
 
 router.get("/", adminAuth, userList);
 router.get("/view", adminAuth, viewProducts);
-router.get("/products/:productId", adminAuth, getProductById);
-router.get("/orders", getAllOrders);
+router.get("/products/:id", adminAuth, getProductById);
+router.get("/orders", adminAuth, getAllOrders);
 
 //PUT
 
-router.put("/products/:productId", adminAuth, updateProduct);
 router.put("/products/:id/disable", adminAuth, disableProduct);
-router.put("/users/:id/block", blockUser);
+router.put("/users/:id/block", adminAuth, blockUser);
+router.put("/products/:id", adminAuth, updateProduct);
 
+//DELETE
+router.delete("/products/:id/delete", adminAuth, deleteProduct);
+router.delete("/orders/:orderId/delete", adminAuth, deleteOrder);
 module.exports = router;

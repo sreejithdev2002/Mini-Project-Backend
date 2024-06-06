@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const maxAge = 3 * 24 * 60 * 60;
 const _ = require("lodash");
 const orderModel = require("../Model/orderModel");
-const { disableProduct } = require("./adminController");
 
 const createToken = (userId) => {
   const token = jwt.sign({ userId }, "JWT", { expiresIn: maxAge });
@@ -13,7 +12,6 @@ const createToken = (userId) => {
 };
 
 module.exports.Signup = async (req, res, next) => {
-  console.log(req.body, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   const { email, password, name } = req.body;
   try {
     const emailExists = await userModel.findOne({ email: email });
@@ -47,25 +45,30 @@ module.exports.Login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await userModel.findOne({ email });
+    const existingUser = await userModel.findOne({ email });
 
-    if (user) {
-      const passwordMatches = await bcrypt.compare(password, user.password);
-
-      if (passwordMatches) {
-        const token = createToken(user._id);
-        return res.status(200).json({
-          user: user,
-          message: "User login successful",
-          created: true,
-          token,
-        });
-      } else {
-        return res.json({ message: "Incorrect password", created: false });
-      }
-    } else {
-      return res.json({ message: "Account not found", created: false });
+    if (!existingUser) {
+      return res.json({
+        created: false,
+        message: "User does not exist",
+      });
     }
+
+    const passwordMatch = await bcrypt.compare(password, existingUser.password);
+    if (!passwordMatch) {
+      return res.json({
+        created: false,
+        message: "Wrong password",
+      });
+    }
+
+    const token = createToken(existingUser._id);
+    res.json({
+      user: existingUser,
+      created: true,
+      message: "Login success",
+      token,
+    });
   } catch (error) {
     console.log(error);
     return res.json({
@@ -77,7 +80,10 @@ module.exports.Login = async (req, res, next) => {
 
 module.exports.latestArrivals = async (req, res, next) => {
   try {
-    const data = await productModel.find({ disableProduct: { $ne: true } }).sort({ dateAdded: -1 }).limit(10);
+    const data = await productModel
+      .find({ disableProduct: { $ne: true } })
+      .sort({ dateAdded: -1 })
+      .limit(10);
     res.json({
       message: "latest arrival fetched",
       status: true,
@@ -94,7 +100,10 @@ module.exports.latestArrivals = async (req, res, next) => {
 
 module.exports.mens = async (req, res, next) => {
   try {
-    const data = await productModel.find({ gender: "Male" , disableProduct: false});
+    const data = await productModel.find({
+      gender: "Male",
+      disableProduct: false,
+    });
     res.json({
       message: "mens collection fetched",
       status: true,
@@ -111,7 +120,10 @@ module.exports.mens = async (req, res, next) => {
 
 module.exports.womens = async (req, res, next) => {
   try {
-    const data = await productModel.find({ gender: "Female" , disableProduct: false });
+    const data = await productModel.find({
+      gender: "Female",
+      disableProduct: false,
+    });
 
     res.json({
       message: "womens collection fetched",
@@ -129,7 +141,10 @@ module.exports.womens = async (req, res, next) => {
 
 module.exports.casuals = async (req, res, next) => {
   try {
-    const data = await productModel.find({ category: "Casuals" , disableProduct: false });
+    const data = await productModel.find({
+      category: "Casuals",
+      disableProduct: false,
+    });
 
     res.json({
       message: "casuals collection fetched",
@@ -147,7 +162,10 @@ module.exports.casuals = async (req, res, next) => {
 
 module.exports.formals = async (req, res, next) => {
   try {
-    const data = await productModel.find({ category: "Formals" , disableProduct: false });
+    const data = await productModel.find({
+      category: "Formals",
+      disableProduct: false,
+    });
 
     res.json({
       message: "formals collection fetched",
@@ -165,7 +183,10 @@ module.exports.formals = async (req, res, next) => {
 
 module.exports.sandals = async (req, res, next) => {
   try {
-    const data = await productModel.find({ category: "Sandals" , disableProduct: false});
+    const data = await productModel.find({
+      category: "Sandals",
+      disableProduct: false,
+    });
 
     res.json({
       message: "sandals collection fetched",
@@ -183,7 +204,10 @@ module.exports.sandals = async (req, res, next) => {
 
 module.exports.sneakers = async (req, res, next) => {
   try {
-    const data = await productModel.find({ category: "Sneakers", disableProduct: false });
+    const data = await productModel.find({
+      category: "Sneakers",
+      disableProduct: false,
+    });
 
     res.json({
       message: "sneakers collection fetched",
@@ -201,7 +225,10 @@ module.exports.sneakers = async (req, res, next) => {
 
 module.exports.luxury = async (req, res, next) => {
   try {
-    const data = await productModel.find({ isLuxury: true , disableProduct: false});
+    const data = await productModel.find({
+      isLuxury: true,
+      disableProduct: false,
+    });
 
     res.json({
       message: "luxury collection fetched",
@@ -219,7 +246,7 @@ module.exports.luxury = async (req, res, next) => {
 
 module.exports.featuredProducts = async (req, res, next) => {
   try {
-    const products = await productModel.find({ disableProduct: false});
+    const products = await productModel.find({ disableProduct: false });
     const shuffledProducts = _.shuffle(products);
     const data = shuffledProducts.slice(0, 4);
 
@@ -261,67 +288,24 @@ module.exports.productDetails = async (req, res) => {
   }
 };
 
-module.exports.userStatus =  async (req, res) => {
+module.exports.userStatus = async (req, res) => {
   try {
-    let isLoggedIn;
-    const user =  req.user.username;
+    const user = req.user;
     if (user) {
-      console.log(req.user.username + " : This is userStatus 111111111")
-      isLoggedIn = true;
+      res.json({ message: "User fetched", user });
     } else {
-      isLoggedIn = false;
+      res.json({ message: "No user logged in", user: null });
     }
-
-    res.json({ isLoggedIn });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
-// module.exports.createOrder = async (req, res) => {
-//   try {
-//     const { productId, quantity } = req.body;
-//     const userId = req.user.id;
-//     console.log(userId + " This is User Id from createOrder");
-
-//     const product = await productModel.findById(productId);
-//     if (!product) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
-
-//     const user = await userModel.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     const newOrder = new orderModel({
-//       product: productId,
-//       user: userId,
-//       quantity: quantity,
-//     });
-
-//     const savedOrder = await newOrder.save();
-//     console.log(userId + " Inside the createOrder");
-
-//     res.status(201).json({
-//       status: true,
-//       message: "Order created successfully",
-//       order: savedOrder,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       status: false,
-//       message: "Internal server error in creating order",
-//       error: error.message,
-//     });
-//   }
-// };
 
 module.exports.createOrder = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
-    const userId = req.user.id; // Assuming userId is available in req.user
+    const userId = req.user.id;
 
     const product = await productModel.findById(productId);
     if (!product) {
@@ -350,11 +334,9 @@ module.exports.createOrder = async (req, res) => {
   }
 };
 
-
 module.exports.getUser = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log(userId + ' id Inside the getUser controller');
 
     if (userId) {
       res.status(200).json({ message: "User id fetched", userId: userId });

@@ -6,6 +6,9 @@ const userModel = require("../Model/userModel");
 const upload = require("../Middleware/multer");
 const { validationResult } = require("express-validator");
 const orderModel = require("../Model/orderModel");
+const fs = require("fs");
+const path = require("path");
+const mongoose = require("mongoose");
 
 const maxAge = 3 * 24 * 60 * 60;
 
@@ -25,7 +28,10 @@ module.exports.Login = async (req, res) => {
         message: "Admin does not exist",
       });
     }
-    const passwordMatch = await bcrypt.compare(password, existingAdmin.password);
+    const passwordMatch = await bcrypt.compare(
+      password,
+      existingAdmin.password
+    );
     if (!passwordMatch) {
       return res.json({
         status: false,
@@ -47,7 +53,6 @@ module.exports.Login = async (req, res) => {
     });
   }
 };
-
 
 module.exports.AddProducts = async (req, res) => {
   const errors = validationResult(req);
@@ -128,37 +133,41 @@ module.exports.viewProducts = async (req, res, next) => {
   }
 };
 
-module.exports.getProductById = async (req, res, next) => {
+// module.exports.getProductById = async (req, res, next) => {
+//   try {
+//     const productId = req.params.id;
+//     console.log("Product ID:", productId);
+
+//     const product = await productModel.findById(productId);
+//     console.log("Product:", product._id);
+
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
+
+//     res.status(200).json({product: product._id, status: true});
+//   } catch (error) {
+//     console.error("Error fetching product:", error);
+//     res.status(500).json({ message: "Failed to fetch product", error });
+//   }
+// };
+
+module.exports.getProductById = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params._id);
+    const productId = req.params.id;
 
+    const product = await productModel.findById(productId);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: 'Product not found' });
     }
-
     res.status(200).json(product);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Failed to fetch product", error });
+    console.log(error)
+    res.status(500).json({ message: error.message });
   }
 };
 
-module.exports.updateProduct = async (req, res, next) => {
-  try {
-    const updatedProduct = await productModel.findByIdAndUpdate(
-      req.params._id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-    return res.status(200).json(updatedProduct);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Failed to update product", error });
-  }
-};
+
 
 module.exports.disableProduct = async (req, res) => {
   try {
@@ -177,32 +186,92 @@ module.exports.disableProduct = async (req, res) => {
   }
 };
 
-module.exports.blockUser = async (req,res) => {
-  try{
+module.exports.blockUser = async (req, res) => {
+  try {
     const user = await userModel.findById(req.params.id);
-    if(!user){
-      return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
     user.blockStatus = !user.blockStatus;
     await user.save();
     res.json({ status: true, blockStatus: user.blockStatus });
-  } catch(error){
-    res.status(500).json({ message : "Server error", error })
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
-module.exports.getAllOrders = async(req, res) => {
-  try{
-    const orders = await orderModel.find().populate('product').populate('user').exec();
+module.exports.getAllOrders = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find()
+      .populate("product")
+      .populate("user")
+      .exec();
 
-    res.status(200).json({ status: true, orders,});
-  } catch(error){
+    res.status(200).json({ status: true, orders });
+  } catch (error) {
     res.status(500).json({
       status: false,
-      message: 'Failed to fetch orders',
+      message: "Failed to fetch orders",
       error: error.message,
     });
+  }
+};
 
+module.exports.deleteProduct = async (req, res) => {
+  const productId = req.params.id;
+  try {
+    const product = await productModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const imagePath = path.join(
+      __dirname,
+      "../public/images/products/",
+      product.image
+    );
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.error("Error deleting image file : ", err);
+      } else {
+        console.log("Image file deleted successfully");
+      }
+    });
+
+    await productModel.findByIdAndDelete(productId);
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+  module.exports.deleteOrder = async(req, res) => {
+    const {orderId} = req.params;
+
+    try{
+      await orderModel.findByIdAndDelete(orderId);
+      res.status(200).json({ message: "Order deleted successfully" });
+    } catch(error){
+      res.status(500).json({ error: "failed to delete order"})
+    }
+  };
+
+
+module.exports.updateProduct = async (req, res) => {
+  try{
+    const product = await productModel.findById(req.params.id);
+    if(!product){
+      return res.status(404).json({ message: "Product not found "});
+    }
+
+    Object.assign(product, req.body);
+
+    const updatedProduct = await product.save();
+    res.status(200).json(updatedProduct);
+  } catch(error) {
+    res.status(400).json({ message: error.message});
   }
 };
