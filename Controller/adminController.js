@@ -133,25 +133,6 @@ module.exports.viewProducts = async (req, res, next) => {
   }
 };
 
-// module.exports.getProductById = async (req, res, next) => {
-//   try {
-//     const productId = req.params.id;
-//     console.log("Product ID:", productId);
-
-//     const product = await productModel.findById(productId);
-//     console.log("Product:", product._id);
-
-//     if (!product) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
-
-//     res.status(200).json({product: product._id, status: true});
-//   } catch (error) {
-//     console.error("Error fetching product:", error);
-//     res.status(500).json({ message: "Failed to fetch product", error });
-//   }
-// };
-
 module.exports.getProductById = async (req, res) => {
   try {
     const productId = req.params.id;
@@ -273,5 +254,55 @@ module.exports.updateProduct = async (req, res) => {
     res.status(200).json(updatedProduct);
   } catch(error) {
     res.status(400).json({ message: error.message});
+  }
+};
+
+
+
+
+
+//CHARTS
+
+module.exports.getProductGenderDistribution = async (req, res) => {
+  try {
+    const distribution = await productModel.aggregate([
+      { $group: { _id: '$gender', count: { $sum: 1 } } }
+    ]);
+    res.status(200).json(distribution);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.getProductLuxuryDistribution = async (req, res) => {
+  try {
+    const distribution = await productModel.aggregate([
+      { $group: { _id: '$isLuxury', count: { $sum: 1 } } }
+    ]);
+    res.status(200).json(distribution);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.getProductBlockStatusDistribution = async (req, res) => {
+  try {
+    const distribution = await productModel.aggregate([
+      { $group: { _id: '$disableProduct', count: { $sum: 1 } } }
+    ]);
+    res.status(200).json(distribution);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.getProductCategoryDistribution = async (req, res) => {
+  try {
+    const distribution = await productModel.aggregate([
+      { $group: { _id: '$category', count: { $sum: 1 } } }
+    ]);
+    res.status(200).json(distribution);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

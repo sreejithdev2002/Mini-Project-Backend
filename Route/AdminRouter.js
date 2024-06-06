@@ -9,9 +9,12 @@ const {
   blockUser,
   getAllOrders,
   deleteProduct,
-  editProduct,
   deleteOrder,
   updateProduct,
+  getProductGenderDistribution,
+  getProductLuxuryDistribution,
+  getProductBlockStatusDistribution,
+  getProductCategoryDistribution,
 } = require("../Controller/adminController");
 const adminAuth = require("../Middleware/adminAuth");
 const router = express.Router();
@@ -39,4 +42,22 @@ router.put("/products/:id", adminAuth, updateProduct);
 //DELETE
 router.delete("/products/:id/delete", adminAuth, deleteProduct);
 router.delete("/orders/:orderId/delete", adminAuth, deleteOrder);
+
+
+
+//CHARTS
+
+router.get('/product-gender-distribution', getProductGenderDistribution);
+router.get('/product-luxury-distribution', getProductLuxuryDistribution);
+router.get('/product-blockstatus-distribution', getProductBlockStatusDistribution);
+router.get('/product-category-distribution', getProductCategoryDistribution);
+
+
+
+
+
+
+
+
+
 module.exports = router;
