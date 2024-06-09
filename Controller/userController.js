@@ -54,6 +54,13 @@ module.exports.Login = async (req, res, next) => {
       });
     }
 
+    if (existingUser.blockStatus) {
+      return res.json({
+        created: false,
+        message: "User is blocked",
+      });
+    }
+
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (!passwordMatch) {
       return res.json({
