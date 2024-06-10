@@ -243,7 +243,7 @@ module.exports.deleteProduct = async (req, res) => {
 
 module.exports.updateProduct = async (req, res) => {
   try{
-    const product = await productModel.findById(req.params.id);
+    const product = await productModel.findById(req.params.productId);
     if(!product){
       return res.status(404).json({ message: "Product not found "});
     }

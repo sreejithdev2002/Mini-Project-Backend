@@ -37,7 +37,7 @@ router.get("/orders", adminAuth, getAllOrders);
 
 router.put("/products/:id/disable", adminAuth, disableProduct);
 router.put("/users/:id/block", adminAuth, blockUser);
-router.put("/products/:id", adminAuth, updateProduct);
+router.put("/products/:productId", adminAuth, updateProduct);
 
 //DELETE
 router.delete("/products/:id/delete", adminAuth, deleteProduct);
