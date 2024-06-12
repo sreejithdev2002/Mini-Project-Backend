@@ -9,6 +9,7 @@ const orderModel = require("../Model/orderModel");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
+const reviewModel = require("../Model/reviewModel");
 
 const maxAge = 3 * 24 * 60 * 60;
 
@@ -257,6 +258,23 @@ module.exports.updateProduct = async (req, res) => {
   }
 };
 
+module.exports.getAllReviews = async(req, res) => {
+  try{
+    const data = await reviewModel.find().populate('userId', 'username').populate('productId', 'name image');
+    res.json({
+      reviews: data,
+      status: true,
+      message: "Fetched all reviews"
+    });
+  } catch(error){
+    res.status(500).json({
+      message: error.message,
+      status: false,
+      message: "Failed to fetch reviews"
+
+    });
+  }
+};
 
 
 

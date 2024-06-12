@@ -15,6 +15,7 @@ const {
   getProductLuxuryDistribution,
   getProductBlockStatusDistribution,
   getProductCategoryDistribution,
+  getAllReviews,
 } = require("../Controller/adminController");
 const adminAuth = require("../Middleware/adminAuth");
 const router = express.Router();
@@ -32,6 +33,7 @@ router.get("/", adminAuth, userList);
 router.get("/view", adminAuth, viewProducts);
 router.get("/products/:id", adminAuth, getProductById);
 router.get("/orders", adminAuth, getAllOrders);
+router.get("/reviews/all", getAllReviews);
 
 //PUT
 

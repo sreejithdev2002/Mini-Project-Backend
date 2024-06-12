@@ -15,6 +15,8 @@ const {
   userStatus,
   createOrder,
   getUser,
+  getReviews,
+  postReviews,
 } = require("../Controller/userController");
 const router = express.Router();
 const userAuth = require("../Middleware/userAuth");
@@ -24,6 +26,7 @@ const userAuth = require("../Middleware/userAuth");
 router.post("/signup", Signup);
 router.post("/login", Login);
 router.post("/createorder",userAuth, createOrder);
+router.post("/reviews/create",userAuth, postReviews);
 
 //GET
 
@@ -39,6 +42,7 @@ router.get("/luxury", luxury);
 router.get("/product/:id", productDetails);
 router.get("/auth/status", userAuth, userStatus);
 router.get("/user",userAuth, getUser);
+router.get("/reviews/:productId", getReviews);
 
 
 module.exports = router;

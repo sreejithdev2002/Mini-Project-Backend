@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const maxAge = 3 * 24 * 60 * 60;
 const _ = require("lodash");
 const orderModel = require("../Model/orderModel");
+const reviewModel = require("../Model/reviewModel");
 
 const createToken = (userId) => {
   const token = jwt.sign({ userId }, "JWT", { expiresIn: maxAge });
@@ -353,5 +354,34 @@ module.exports.getUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports.getReviews = async(req, res) => {
+  try{
+    const reviews = await reviewModel.find({ productId: req.params.productId }).populate('userId', 'username');
+    res.json(reviews);
+  } catch(error){
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+module.exports.postReviews = async(req, res) => {
+  const review = new reviewModel({
+    productId: req.body.productId,
+    userId: req.user.id,
+    rating: req.body.rating,
+    comment: req.body.comment
+  });
+
+  try{
+    const newReview = await review.save();
+    res.status(201).json(newReview);
+  } catch(error){
+    res.status(400).json({
+      message: error.message
+    });
   }
 };
