@@ -357,31 +357,95 @@ module.exports.getUser = async (req, res) => {
   }
 };
 
-module.exports.getReviews = async(req, res) => {
-  try{
-    const reviews = await reviewModel.find({ productId: req.params.productId }).populate('userId', 'username');
+module.exports.getReviews = async (req, res) => {
+  try {
+    const reviews = await reviewModel
+      .find({ productId: req.params.productId })
+      .populate("userId", "username");
     res.json(reviews);
-  } catch(error){
+  } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };
 
-module.exports.postReviews = async(req, res) => {
+module.exports.postReviews = async (req, res) => {
   const review = new reviewModel({
     productId: req.body.productId,
     userId: req.user.id,
     rating: req.body.rating,
-    comment: req.body.comment
+    comment: req.body.comment,
   });
 
-  try{
+  try {
     const newReview = await review.save();
     res.status(201).json(newReview);
-  } catch(error){
+  } catch (error) {
     res.status(400).json({
-      message: error.message
+      message: error.message,
+    });
+  }
+};
+
+module.exports.AddToWishlist = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    const user = await userModel.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (user.wishlist.includes(productId)) {
+      // Remove product from wishlist
+      user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
+      await user.save();
+      return res.status(201).json({
+        message: "Product removed from wishlist",
+      });
+    } else {
+      // Add product to wishlist
+      user.wishlist.push(productId);
+      await user.save();
+      return res.status(200).json({
+        message: "Product added to wishlist",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+module.exports.checkWislist = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const user = await userModel.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const isInWishlist = user.wishlist.includes(productId);
+    res.status(200).json({
+      inWishlist: isInWishlist,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
     });
   }
 };

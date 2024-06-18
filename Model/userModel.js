@@ -17,7 +17,11 @@ const userSchema = new mongoose.Schema({
     blockStatus: {
         type: Boolean,
         default: false
-    }
+    },
+    wishlist: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'product'
+    }]
 });
 
 userSchema.pre('save', async function (next) {
