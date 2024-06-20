@@ -19,6 +19,9 @@ const {
   postReviews,
   AddToWishlist,
   checkWislist,
+  addToCart,
+  getWishlist,
+  removeWishlist,
 } = require("../Controller/userController");
 const router = express.Router();
 const userAuth = require("../Middleware/userAuth");
@@ -30,6 +33,7 @@ router.post("/login", Login);
 router.post("/createorder",userAuth, createOrder);
 router.post("/reviews/create",userAuth, postReviews);
 router.post("/wishlist", userAuth, AddToWishlist);
+router.post("/cart/add", userAuth, addToCart);
 
 //GET
 
@@ -47,6 +51,11 @@ router.get("/auth/status", userAuth, userStatus);
 router.get("/user",userAuth, getUser);
 router.get("/reviews/:productId", getReviews);
 router.get("/wishlist/check/:productId",userAuth, checkWislist);
+router.get("/wishlist", userAuth, getWishlist);
 
+
+//DELETE
+
+router.delete("/wishlist/remove/:productId", userAuth, removeWishlist);
 
 module.exports = router;

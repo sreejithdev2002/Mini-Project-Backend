@@ -449,3 +449,86 @@ module.exports.checkWislist = async (req, res) => {
     });
   }
 };
+
+module.exports.getWishlist = async (req, res) => {
+  try {
+    const data = await userModel.findById(req.user._id).populate("wishlist");
+
+    res.status(200).json(data.wishlist);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports.removeWishlist = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const productId  = req.params.productId;
+
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const wishlistItemIndex = user.wishlist.indexOf(productId);
+    if (wishlistItemIndex > -1) {
+      user.wishlist.splice(wishlistItemIndex, 1);
+    } else {
+      return res.status(404).json({ message: "Product not found in wishlist" });
+    }
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({
+        message: "Product removed from wishlist",
+        wishlist: user.wishlist,
+      });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
+  }
+};
+
+module.exports.addToCart = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { productId, quantity } = req.body;
+
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const cartItemIndex = user.cart.findIndex(
+      (cartItem) => cartItem.product.toString() === productId
+    );
+
+    if (cartItemIndex > -1) {
+      user.cart[cartItemIndex].quantity += quantity;
+    } else {
+      user.cart.push({ product: productId, quantity: quantity });
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "Product added to cart", cart: user.cart });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
+  }
+};
