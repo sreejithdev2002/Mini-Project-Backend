@@ -11,7 +11,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const reviewModel = require("../Model/reviewModel");
 
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 30 * 24 * 60 * 60;
 
 const createToken = (adminId) => {
   const token = jwt.sign({ adminId }, "adminjwt", { expiresIn: maxAge });
