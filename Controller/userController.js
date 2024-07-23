@@ -252,25 +252,25 @@ module.exports.luxury = async (req, res, next) => {
   }
 };
 
-// module.exports.featuredProducts = async (req, res, next) => {
-//   try {
-//     const products = await productModel.find({ disableProduct: false });
-//     const shuffledProducts = _.shuffle(products);
-//     const data = shuffledProducts.slice(0, 4);
+module.exports.featuredProducts = async (req, res, next) => {
+  try {
+    const products = await productModel.find({ disableProduct: false });
+    const shuffledProducts = _.shuffle(products);
+    const data = shuffledProducts.slice(0, 4);
 
-//     res.json({
-//       message: "Featured products fetched",
-//       status: true,
-//       FeaturedProducts: data,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.json({
-//       message: "Internal server error in featured products",
-//       status: false,
-//     });
-//   }
-// };
+    res.json({
+      message: "Featured products fetched",
+      status: true,
+      FeaturedProducts: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Internal server error in featured products",
+      status: false,
+    });
+  }
+};
 
 module.exports.productDetails = async (req, res) => {
   try {
