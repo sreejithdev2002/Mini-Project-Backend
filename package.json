@@ -5,6 +5,7 @@
   "main": "App.js",
   "scripts": {
     "start": "node App.js",
+    "build": "npm rebuild bcrypt --build-from-source",
     "test": "react-scripts test"
   },
   "author": "",
