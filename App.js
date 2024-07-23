@@ -10,7 +10,7 @@ const path = require("path");
 
 dbConnection.dbConnect();
 
-const PORT = process.env.PORT;
+const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
 });
