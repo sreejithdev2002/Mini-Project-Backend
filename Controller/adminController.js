@@ -1,6 +1,6 @@
 const adminModel = require("../Model/adminModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcryptjs = require("bcryptjs");
 const productModel = require("../Model/productModel");
 const userModel = require("../Model/userModel");
 const upload = require("../Middleware/multer");
@@ -29,7 +29,7 @@ module.exports.Login = async (req, res) => {
         message: "Admin does not exist",
       });
     }
-    const passwordMatch = await bcrypt.compare(
+    const passwordMatch = await bcryptjs.compare(
       password,
       existingAdmin.password
     );

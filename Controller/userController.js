@@ -1,7 +1,7 @@
 const userModel = require("../Model/userModel");
 const productModel = require("../Model/productModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcryptjs = require("bcryptjs");
 const maxAge = 30 * 24 * 60 * 60;
 const _ = require("lodash");
 const orderModel = require("../Model/orderModel");
@@ -62,7 +62,7 @@ module.exports.Login = async (req, res, next) => {
       });
     }
 
-    const passwordMatch = await bcrypt.compare(password, existingUser.password);
+    const passwordMatch = await bcryptjs.compare(password, existingUser.password);
     if (!passwordMatch) {
       return res.json({
         created: false,
