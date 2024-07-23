@@ -38,7 +38,7 @@ router.post("/cart/add", userAuth, addToCart);
 
 //GET
 
-// router.get("/", featuredProducts);
+router.get("/", featuredProducts);
 router.get("/latestarrival", latestArrivals);
 router.get("/mens", mens);
 router.get("/womens", womens);
