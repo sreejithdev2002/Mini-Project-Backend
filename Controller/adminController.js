@@ -1,6 +1,6 @@
 const adminModel = require("../Model/adminModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const productModel = require("../Model/productModel");
 const userModel = require("../Model/userModel");
 const upload = require("../Middleware/multer");

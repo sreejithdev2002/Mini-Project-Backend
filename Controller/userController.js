@@ -1,7 +1,7 @@
 const userModel = require("../Model/userModel");
 const productModel = require("../Model/productModel");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const maxAge = 30 * 24 * 60 * 60;
 const _ = require("lodash");
 const orderModel = require("../Model/orderModel");
