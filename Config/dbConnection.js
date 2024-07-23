@@ -5,7 +5,7 @@ module.exports = {
     try {
       await mongoose
         .connect(
-          "mongodb+srv://sreejithdev2002:bjauscs005@shoooz.qdwdkf3.mongodb.net/shoooz",
+          process.env.MONGODB_URL,
           {
             useNewUrlParser: true,
             useUnifiedTopology: true,
