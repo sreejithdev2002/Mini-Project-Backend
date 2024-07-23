@@ -5,7 +5,12 @@ module.exports = {
     try {
       await mongoose
         .connect(
-          "mongodb+srv://sreejithdev2002:bjauscs005@shoooz.qdwdkf3.mongodb.net/shoooz"
+          "mongodb+srv://sreejithdev2002:bjauscs005@shoooz.qdwdkf3.mongodb.net/shoooz",
+          {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 10000, // Adjust the timeout as needed
+          }
         )
         .then(() => {
           console.log("MongoDB Connected Successfully");
