@@ -8,10 +8,8 @@ const userRouter = require("./Route/UserRouter");
 const adminRouter = require("./Route/AdminRouter");
 const path = require("path");
 
-//database config
 dbConnection.dbConnect();
 
-//config
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
