@@ -33,7 +33,7 @@ router.get("/", adminAuth, userList);
 router.get("/view", adminAuth, viewProducts);
 router.get("/products/:id", adminAuth, getProductById);
 router.get("/orders", adminAuth, getAllOrders);
-router.get("/reviews/all", getAllReviews);
+router.get("/reviews/all", adminAuth, getAllReviews);
 
 //PUT
 
@@ -45,21 +45,27 @@ router.put("/products/:productId", adminAuth, updateProduct);
 router.delete("/products/:id/delete", adminAuth, deleteProduct);
 router.delete("/orders/:orderId/delete", adminAuth, deleteOrder);
 
-
-
 //CHARTS
 
-router.get('/product-gender-distribution', getProductGenderDistribution);
-router.get('/product-luxury-distribution', getProductLuxuryDistribution);
-router.get('/product-blockstatus-distribution', getProductBlockStatusDistribution);
-router.get('/product-category-distribution', getProductCategoryDistribution);
-
-
-
-
-
-
-
-
+router.get(
+  "/product-gender-distribution",
+  adminAuth,
+  getProductGenderDistribution
+);
+router.get(
+  "/product-luxury-distribution",
+  adminAuth,
+  getProductLuxuryDistribution
+);
+router.get(
+  "/product-blockstatus-distribution",
+  adminAuth,
+  getProductBlockStatusDistribution
+);
+router.get(
+  "/product-category-distribution",
+  adminAuth,
+  getProductCategoryDistribution
+);
 
 module.exports = router;
