@@ -9,7 +9,8 @@ module.exports = {
           {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 10000, // Adjust the timeout as needed
+            heartbeatFrequencyMS: 500,
+            serverSelectionTimeoutMS: 500,
           }
         )
         .then(() => {

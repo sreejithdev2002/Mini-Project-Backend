@@ -19,9 +19,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: 'https://shoooz.vercel.app', // Replace with your local frontend URL
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
+  origin: "https://shoooz.vercel.app",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
 };
 
 app.use(cors(corsOptions));
