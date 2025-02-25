@@ -62,7 +62,10 @@ module.exports.Login = async (req, res, next) => {
       });
     }
 
-    const passwordMatch = await bcryptjs.compare(password, existingUser.password);
+    const passwordMatch = await bcryptjs.compare(
+      password,
+      existingUser.password
+    );
     if (!passwordMatch) {
       return res.json({
         created: false,
