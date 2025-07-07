@@ -36,7 +36,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const dbConnection = require("./Config/dbConnection");
 const path = require("path");
-import rateLimit from "express-rate-limit";
+const rateLimit = require("express-rate-limit");
 
 
 const userRouter = require("./Route/UserRouter");
