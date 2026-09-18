@@ -31,7 +31,9 @@ module.exports = {
     try {
       const MONGO_URI =
         process.env.MONGODB_URL ||
-        "mongodb+srv://sreejithdev2002:bjauscs005@shoooz.qdwdkf3.mongodb.net/?retryWrites=true&w=majority";
+        "mongodb+srv://sreejithdev2002:bjauscs005@shoooz.qdwdkf3.mongodb.net/";
+      // "mongodb+srv://sreejithdev2002:bjauscs005@shoooz.qdwdkf3.mongodb.net/?retryWrites=true&w=majority";
+      // "mongodb://127.0.0.1:27017/shoooz";
 
       console.log("🔄 Connecting to MongoDB...");
 

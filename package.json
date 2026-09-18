@@ -4,7 +4,7 @@
   "description": "",
   "main": "App.js",
   "scripts": {
-    "start": "node App.js",
+    "start": "nodemon App.js",
     "build": "npm rebuild bcrypt --build-from-source",
     "test": "react-scripts test"
   },
