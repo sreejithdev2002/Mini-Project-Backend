@@ -22,7 +22,7 @@ const PORT = 8000;
 // };
 
 const corsOptions = {
-  origin: ["https://shoooz.vercel.app", "http://localhost:5173/"], // ✅ should be array, not object
+  origin: ["https://shoooz.vercel.app", "http://localhost:5173"], // ✅ should be array, not object
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"], // ✅ better as array
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
